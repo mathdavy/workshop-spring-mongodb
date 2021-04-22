@@ -25,4 +25,13 @@ public class UserService {
         Optional<User> obj = userRepository.findById(id);
         return new UserDto(obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado")));
     }
+
+    public UserDto insertUser(UserDto user) {
+        User userDomain = new User( user.getName(), user.getEmail());
+        return new UserDto(userRepository.insert(userDomain));
+    }
+
+
+
+
 }

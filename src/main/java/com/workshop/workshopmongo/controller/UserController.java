@@ -1,17 +1,13 @@
 package com.workshop.workshopmongo.controller;
 
-import com.workshop.workshopmongo.domain.User;
 import com.workshop.workshopmongo.dto.UserDto;
 import com.workshop.workshopmongo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,12 +18,19 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> findAll(){
+    public ResponseEntity<List<UserDto>> findAll() {
         return ResponseEntity.ok().body(userService.findAll());
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<UserDto> findById(@PathVariable("id") String id){
+    public ResponseEntity<UserDto> findById(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(userService.findById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> insertUser(@RequestBody UserDto user) {
+        UserDto userDto = userService.insertUser(user);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userDto.getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 }
